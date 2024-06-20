@@ -31,12 +31,13 @@ public class MeterReadingService : MeterReader.gRPC.MeterReadingService.MeterRea
                 Value = reading.ReadingValue,
                 ReadingDate = reading.ReadingTime.ToDateTime()
             };
-
+            _logger.LogInformation($"Adding {reading.ReadingValue}");
             _repository.AddEntity(readingValue);
         }
 
         if (await _repository.SaveAllAsync())
         {
+            _logger.LogInformation("Successfully saved new readings...");
             return new StatusMessage()
             {
                 Message = "Successfully added to the database",
@@ -44,6 +45,7 @@ public class MeterReadingService : MeterReader.gRPC.MeterReadingService.MeterRea
             };
         }
 
+        _logger.LogInformation("Failed to save new readings...");
         return new StatusMessage()
         {
             Message = "Failed to store to the database",
