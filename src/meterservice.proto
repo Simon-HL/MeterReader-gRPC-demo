@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option csharp_namespace = "MeterReader.gRPC";
+
+import "google/protobuf/timestamp.proto";
+
+service MeterReadingService {
+  rpc AddReading (ReadingPacket) returns (StatusMessage);
+}
+
+message ReadingPacket {
+  repeated ReadingMessage Readings = 1;
+  ReadingStatus Successful = 2;
+}
+
+// The numbers are the ordinal position in the serialization, not values.
+message ReadingMessage {
+  int32 CustomerId = 1;
+  int32 ReadingValue = 2;
+  string Notes = 3;
+  google.protobuf.Timestamp ReadingTime = 5;
+  reserved 4;  // used to deprecate the order 4. We have already used it before and stopped using it, but to not break our contract for legacy systems we can't shift the order or re-use it.
+  reserved 'Successful'; // Reserve this for the future, because we think we will implement it later.
+}
+
+message StatusMessage {
+  ReadingStatus Status = 1;
+  string Message = 2;
+}
+
+// In Enums the numbers are actual values
+enum ReadingStatus {
+  Unknown = 0; 
+  Success = 1;
+  Failure = 2;
+}

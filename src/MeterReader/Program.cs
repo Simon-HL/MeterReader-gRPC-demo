@@ -1,3 +1,4 @@
+using MeterReader.Services;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,7 +68,7 @@ static void SetupMiddleware(WebApplication webApp)
   webApp.UseAuthorization();
 
   webApp.MapRazorPages();
-
+  webApp.MapGrpcService<MeterReadingService>();
 }
 
 
@@ -101,5 +102,9 @@ static void RegisterServices(WebApplicationBuilder bldr)
   bldr.Services.AddScoped<IReadingRepository, ReadingRepository>();
 
   bldr.Services.AddRazorPages();
-
+  
+  if(bldr.Environment.IsDevelopment())
+    bldr.Services.AddGrpc(cfg => cfg.EnableDetailedErrors = true);
+  else
+    bldr.Services.AddGrpc();
 }
