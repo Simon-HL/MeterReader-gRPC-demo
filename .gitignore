@@ -349,3 +349,7 @@ healthchecksdb
 MigrationBackup/
 
 **/wwwroot/lib/**/*
+
+*/.idea/
+.venv/
+.DS_Store
