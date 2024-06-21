@@ -1,4 +1,5 @@
 using MeterReader.Services;
+using Grpc.AspNetCore.Web;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,8 +68,12 @@ static void SetupMiddleware(WebApplication webApp)
   webApp.UseAuthentication();
   webApp.UseAuthorization();
 
+  webApp.UseGrpcWeb();
+  webApp.MapGrpcService<MeterReadingService>()
+    .EnableGrpcWeb()  // When we enable grpc web, this middleware has to come before any http middleware like RazorPages for example.
+    .RequireCors("AllowAll");
+  
   webApp.MapRazorPages();
-  webApp.MapGrpcService<MeterReadingService>();
 }
 
 
